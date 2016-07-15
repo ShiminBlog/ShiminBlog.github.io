@@ -1,16 +1,16 @@
 future: true
 permalink: /:title/
 url: http://hustcat.github.io
-name: YY哥
-author: hustcat
+name: MinGO
+author: mickey.shi
 qq: 
-email: hustcat@gmail.com
-duoshuo: hustcat
+email: mickey_shi@outllok.com
+duoshuo: 
 beian: 
 cnzz: 
-weibo: hustcat
-github: hustcat
+weibo: 
+github: 
 paginate: 20
 highlighter: rouge
 truncate: true
-about: "YY哥(hustcat)"
+about: "MinGO"
