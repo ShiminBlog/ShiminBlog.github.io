@@ -9,7 +9,7 @@ duoshuo:
 beian: 
 cnzz: 
 weibo: 
-github: https://github.com/shiminblog/
+github: shiminblog/
 paginate: 20
 highlighter: rouge
 truncate: true
