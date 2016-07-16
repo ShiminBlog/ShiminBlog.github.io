@@ -9,17 +9,17 @@ comments: no
 
 {{ site.about }}
 
-专业打杂程序员，全栈工程师，擅长打杂，吹牛逼...
+不会写框架的程序员；一堆一堆的大道理，却不懂揣测人心；目前公司御用 lcd 捉虫子的人
 
-关注 Linux kernel、Docker/Kubernetes、Networking、Distributed Storage...
+关注 Linux kernel、Android display、宇宙人生
 
 
 ---
 ### 经历
 
-* 2004.09 ~ 2011.04 游学于武汉某985职业技术学院 —— 关山口职业技术学院
+* 2008.10 ~ 2011.06 晃荡于山城某学院
 
-* 2011.04 ~ Now     在深圳某国内前三互联网公司，从事搬砖、打杂等相关工作
+* 2012.12 ~ Now     漂泊于魔都，投身于“高贵而性感”的代码搬运工行业
 
 
 ----
@@ -35,12 +35,6 @@ comments: no
 
 GitHub：[http://github.com/{{ site.github }}](http://github.com/{{ site.github }})
 
-Twitter: [hustcat](https://twitter.com/hustcat)
-
-@cnblogs：[hustcat](http://hustcat.cnblogs.com)
-
-----
-
-[![新浪微博](http://service.t.sina.com.cn/widget/qmd/1831504255/02345c5a/1.png)](http://weibo.com/u/1831504255?s=6uyXnP)
+Facebook: [石云松](https://www.facebook.com/json.shi)
 
 ----
