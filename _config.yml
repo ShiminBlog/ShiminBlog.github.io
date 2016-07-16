@@ -3,13 +3,13 @@ permalink: /:title/
 url: https://shiminblog.github.io/
 name: MinGO
 author: mickey.shi
-qq: 
+qq: 395128011
 email: mickey_shi@outllok.com
 duoshuo: 
 beian: 
 cnzz: 
 weibo: 
-github: 
+github: https://github.com/shiminblog/
 paginate: 20
 highlighter: rouge
 truncate: true
