@@ -1,0 +1,11 @@
+---
+layout: post
+title:  时间与生命
+date: 2016-07-07 12:00:30
+---
+
+##  时间 * 生命 ##
+[](/assets/first/1.jpg)
+[](/assets/first/2.jpg)
+
+> To the time to life, rather than to life in time.
