@@ -9,7 +9,7 @@ comments: no
 
 {{ site.about }}
 
-不会写框架的程序员；一堆一堆的大道理，却不懂揣测人心；目前公司御用 lcd 捉虫子的人
+公司御用 lcd 捉虫子的人
 
 关注 Linux kernel、Android display、宇宙人生
 
