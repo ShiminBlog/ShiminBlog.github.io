@@ -9,12 +9,11 @@ I'm not a git-use-expert. These problems often occur in my work. I write them he
 
 ### Please, commit your changes or stash them before you can merge
 
-Sometimes, to pull the changes from git server and get the error message like this:
->Please, commit your changes or stash them before you can merge </br>
->~~~~~~~~~~ </br>
+Sometimes, to pull the changes from git server and get the error message like this: <br>
+>Please, commit your changes or stash them before you can merge <br>
+>~~~~~~~~~~ <br>
 >Please, commit your changes or stash them before you can merge.
-
-It can be resolved in this way:
-> git stash </br>
-> git pull  </br>
-> git stash pop </br>
+It can be resolved in this way: <br>
+> git stash <br>
+> git pull  <br>
+> git stash pop <br>
