@@ -15,7 +15,7 @@ Sometimes, to pull the changes from git server and get the error message like th
 > Please, commit your changes or stash them before you can merge. <br>
 > Aborting
 
-It can be resolved in this way:
+It can be resolved in this way and have no effect on local files:
 > git stash <br>
 > git pull  <br>
 > git stash pop <br>
