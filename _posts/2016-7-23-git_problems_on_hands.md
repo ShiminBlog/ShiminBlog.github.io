@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  git problems on hands
-categories: 工作随记
+categories: 工作随笔
 date: 2016-07-23 16:23:30
 ---
 
