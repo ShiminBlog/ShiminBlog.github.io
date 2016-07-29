@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  MarkDown 语法笔记
-categories: 快速上手
+categories: 学习笔记
 date: 2016-07-29 23:32:30
 ---
 
