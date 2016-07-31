@@ -5,7 +5,6 @@ categories: 工作随笔
 date: 2016-07-23 16:23:30
 ---
 
-##  git problems on hands ##
 I am not a git-use-expert. These problems often occur in my work. I write them here and give the ways how to deal with them.
 
 #### Please, commit your changes or stash them before you can merge
