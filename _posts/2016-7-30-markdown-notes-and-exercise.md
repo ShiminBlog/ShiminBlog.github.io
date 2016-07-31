@@ -153,7 +153,7 @@ MarkDown 默认有字体加粗、字体倾斜的语法。
 
 有序列表是在列表前以英文的数字加上一个英文句号，然后空白一个字符，再加上列表内容
 
-![](/assets/MarkDown/libiao.png)
+![](/assets/MarkDown/liebiao.png)
 
 
 #### 表格
