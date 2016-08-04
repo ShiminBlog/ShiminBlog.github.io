@@ -98,33 +98,33 @@ date: 2016-08-03 19:40:30
 
     #pragma pack(1)
     struct splash_index {
-	    char id[8];						// "SPLASH!!"
-	    unsigned int  lk_logo_offset;				// The address where store bootloader logo.png is offset lk_logo_offset bytes from 0
-    	unsigned int  kernel_logo_offset;			// address where store kernel logo.png
+        char id[8];						// "SPLASH!!"
+        unsigned int  lk_logo_offset;				// The address where store bootloader logo.png is offset lk_logo_offset bytes from 0
+        unsigned int  kernel_logo_offset;			// address where store kernel logo.png
     	unsigned int  bootanimation_offset;			// address where store bootanimation.zip
     	unsigned int  shutdownanimation_offset;		// address where store shutdownanimation.zip
     	unsigned int  bootanimation_size;
     	unsigned int  shutdownanimation_size;
     	unsigned char reserved[512-32];				// splash index total 512 bytes
    };
-
+    
    struct bootanimation_srtuct {
     	char id[15];				// "BOOTANIMATION!!"
     	unsigned int size_in_bytes;			// The file size of the bootanimation.zip
     	unsigned char reserved[ANIMATION_HEAD_SIZE-19];		// The head of the bootanimation zone is 512 bytes;
     };
-
+     
    struct bootanimation_end_struct {
     	char end[16];				// "BOOTANIMATIONEND"
     	unsigned char reserver[ANIMATION_TAIL_SIZE-16];
     };
-
+    
    struct shutdownanimation_struct {
     	char id[19];				// "SHUTDOWNANIMATION!!"
     	unsigned size_in_bytes;				// The file size of the shutdownanimation.zip
     	unsigned char reserved[ANIMATION_HEAD_SIZE-23];		// The head of the shutdownanimation zone is 512 bytes;
     };
-
+     
    struct shutdownanimation_end_struct {
     	char end[20];				// "SHUTDOWNANIMATIONEND"
     	unsigned char reserver[ANIMATION_TAIL_SIZE-20];
@@ -185,7 +185,7 @@ date: 2016-08-03 19:40:30
 
 以下文字为引用别人的blog：
 
-> 遇到权限问题，在logcat或者kernel的log中一定会打印avc denied提示缺少什么权限，
+> *遇到权限问题，在logcat或者kernel的log中一定会打印avc denied提示缺少什么权限，
  Command： 
   cat /proc/kmsg | grep avc 或 dmesg | grep avc 
   解决原则是：缺什么补什么，一步一步补到没有avc denied为止。  
@@ -200,7 +200,7 @@ date: 2016-08-03 19:40:30
    什么类型的文件：        tclass=blk_file  
 
    解决方法：kernel.te 
-   allow kernel block_device:blk_file write; 
+   allow kernel block_device:blk_file write;*
 
 以上详情请参看:  [Android 5.x 权限问题解决方法](http://m.blog.csdn.net/article/details?id=50904061)
 
@@ -208,22 +208,22 @@ date: 2016-08-03 19:40:30
 
 以下是读取开关机动画所需要的权限:
 
-bootanim.te
+*bootanim.te*
 
     allow bootanim block_device:dir search;
     allow bootanim mmc_block_device:blk_file rw_file_perms;
     allow bootanim system_data_file:dir {rw_file_perms search create add_name remove_name};
     allow bootanim system_data_file:file {rw_file_perms create setattr unlink};
 
-file_contexts
+*file_contexts*
 
     /dev/block/mmcblk0p29    u:object_r:mmc_block_device:s0
 
-ueventd.rc
+*ueventd.rc*
 
     /dev/block/mmcblk0p29     0777   root       graphics
 
-qseecomd.te
+*qseecomd.te*
 
     allow tee system_prop:property_service {set};
 
@@ -231,12 +231,12 @@ qseecomd.te
 
 让系统在 make 的时候，自动生成 splash.img，这是很重要的。这里以高通为例，修改如下:
 
-vendor/qcom/build/tasks/generate_extra_images.mk
+*vendor/qcom/build/tasks/generate_extra_images.mk*
 
     INSTALLED_SPLASHIMAGE_TARGET := $(PRODUCT_OUT)/splash.img
     //....
 
-![](/assets/splash/memory.png)
+![](/assets/splash/mk.png)
 
 ## 测试
 
