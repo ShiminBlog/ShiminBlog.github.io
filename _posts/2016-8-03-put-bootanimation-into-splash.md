@@ -45,6 +45,7 @@ date: 2016-08-03 19:40:30
 #### splash head
 
 在 splash head 里面需要放置以下内容:
+
 + splash head 头标志，我这里使用字符串 "SPLASH!!" 来表示；
 + bootloader logo.png 的存放起始地址；
 + kernel logo.png 的存放起始地址；
@@ -62,12 +63,14 @@ date: 2016-08-03 19:40:30
 在 bootanimation.zip 区域，分为了 32 bytes 的头、bootanimation.zip 文件以及32 bytes 的尾三部分。
 
 其详细放置情况如下：
+
 + bootanimation.zip head 标志，我这里使用了 "BOOTANIMATION!!"；
 + 紧跟着 32 bytes 后放入 bootanimation.zip 文件大小的参数，以 byte 为单位，该参数占4 bytes.
 + 接着放入 bootanimation.zip 的二进制文件；
 + 接着放入 32 bytes 的尾部，在尾部的前 16 bytes，放入 bootanimation.zip 区域的结束标志，我这里使用了 "BOOTANIMATIONEND"。
 
 那么，在开机动画阶段，读取 bootanimation.zip 的流程即是：
+
 1. 读取 512 bytes 的 splash head 校验，并取出其中 bootanimation.zip 的首地址；
 2. seek 到 bootanimation.zip 区域的首地址，读取 32 bytes 的 head，校验并取出其中该文件大小的参数；
 3. 继续偏移 32 bytes，然后读取上述文件大小的字节数，放入缓存区；
@@ -79,12 +82,14 @@ date: 2016-08-03 19:40:30
 在 shutdownanimation.zip 区域，分为了 32 bytes 的头、shutdownanimation.zip 文件以及32 bytes 的尾三部分。
 
 其详细放置情况如下：
+
 + shutdownanimation.zip head 标志，我这里使用了 "SHUTDOWNANIMATION!!"；
 + 紧跟着 32 bytes 后放入 shutdownanimation.zip 文件大小的参数，以 byte 为单位，该参数占4 bytes.
 + 接着放入 shutdownanimation.zip 的二进制文件；
 + 接着放入 32 bytes 的尾部，在尾部的前 19 bytes，放入 shutdownanimation.zip 区域的结束标志，我这里使用了 "SHUTDOWNANIMATIONEND"。
 
 那么，在关机动画阶段，读取 shutdownanimation.zip 的流程即是：
+
 1. 读取 512 bytes 的 splash head 校验，并取出其中 shutdownanimation.zip 的首地址；
 2. seek 到 shutdownanimation.zip 区域的首地址，读取 32 bytes 的 head，校验并取出其中该文件大小的参数；
 3. 继续偏移 32 bytes，然后读取上述文件大小的字节数，放入缓存区；
