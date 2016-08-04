@@ -97,27 +97,7 @@ date: 2016-08-03 19:40:30
 
 其放置到 splash 分区的大概过程如下:
 
-       boot_size, shut_size = CheckAnimation() 
-	   print boot_size, shut_size
-	   shutdownanimation_offset = bootanimation_offset + boot_size + 2*32 + 1
-				
-	   file = open(out, "wb")
-	   file.write(MakeSplashIndex(boot_size, shut_size))
-	   file.write(GetImgHeader(img.size))
-	   file.write(GetImageBody(img))
-		
-	   file.seek(bootanimation_offset)       ## seek bootanimation.zip potision 
-
-	   file.write(BootAnimationHead(boot_size))
-	   file.write(BootAnimationBody())
-	   file.write(BootAnimationEnd())
-
-	   file.seek(shutdownanimation_offset)       ## seek bootanimation.zip potision
-	   file.write(ShutdownAnimationHead(shut_size))
-	   file.write(ShutdownAnimationBody())
-	   file.write(ShutdownAnimationEnd())
-	   file.close()
-
+![](/assets/splash/splash.png)
 
 ### bootloader 读取
 
@@ -209,3 +189,7 @@ date: 2016-08-03 19:40:30
 
 2016-08-04
 
+
+## 附
+
+[存入 splash 分区 Python脚本](/code/splash.py)
