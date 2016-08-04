@@ -192,4 +192,4 @@ date: 2016-08-03 19:40:30
 
 ## 附
 
-[存入 splash 分区 Python脚本](/code/splash.py)
+[存入 splash 分区 Python脚本](https://github.com/shiminblog/shiminblog.github.io/blob/master/code/splash.py)
