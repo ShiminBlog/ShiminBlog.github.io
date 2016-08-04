@@ -134,22 +134,7 @@ date: 2016-08-03 19:40:30
 
 以下文字为引用别人的blog：
 
-> 遇到权限问题，在logcat或者kernel的log中一定会打印avc denied提示缺少什么权限，
- Command： 
-  cat /proc/kmsg | grep avc 或 dmesg | grep avc 
-  解决原则是：缺什么补什么，一步一步补到没有avc denied为止。  
-  下面给出四个案例：  
-  1. 
-   audit(0.0:67): avc: denied { write } for path="/dev/block/vold/93:96" dev="tmpfs" ino=1263 scontext=u:r:kernel:s0 tcontext=u:object_r:block_device:s0 tclass=blk_file permissive=0  
-
-   分析过程： 
-   缺少什么权限：           { write }权限， 
-   谁缺少权限：               scontext=u:r:kernel:s0， 
-   对哪个文件缺少权限：tcontext=u:object_r:block_device 
-   什么类型的文件：        tclass=blk_file  
-
-   解决方法：kernel.te 
-   allow kernel block_device:blk_file write;
+![](/assets/splash/permision.png)
 
 以上详情请参看:  [Android 5.x 权限问题解决方法](http://m.blog.csdn.net/article/details?id=50904061)
 
