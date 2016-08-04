@@ -93,43 +93,7 @@ date: 2016-08-03 19:40:30
 
 那么，上述几个区域，形成的数据结构大致如下:
 
-    #define ANIMATION_HEAD_SIZE				(32)
-    #define ANIMATION_TAIL_SIZE				(32)
-
-    #pragma pack(1)
-    struct splash_index {
-        char id[8];						// "SPLASH!!"
-        unsigned int  lk_logo_offset;				// The address where store bootloader logo.png is offset lk_logo_offset bytes from 0
-        unsigned int  kernel_logo_offset;			// address where store kernel logo.png
-    	unsigned int  bootanimation_offset;			// address where store bootanimation.zip
-    	unsigned int  shutdownanimation_offset;		// address where store shutdownanimation.zip
-    	unsigned int  bootanimation_size;
-    	unsigned int  shutdownanimation_size;
-    	unsigned char reserved[512-32];				// splash index total 512 bytes
-   };
-    
-   struct bootanimation_srtuct {
-    	char id[15];				// "BOOTANIMATION!!"
-    	unsigned int size_in_bytes;			// The file size of the bootanimation.zip
-    	unsigned char reserved[ANIMATION_HEAD_SIZE-19];		// The head of the bootanimation zone is 512 bytes;
-    };
-     
-   struct bootanimation_end_struct {
-    	char end[16];				// "BOOTANIMATIONEND"
-    	unsigned char reserver[ANIMATION_TAIL_SIZE-16];
-    };
-    
-   struct shutdownanimation_struct {
-    	char id[19];				// "SHUTDOWNANIMATION!!"
-    	unsigned size_in_bytes;				// The file size of the shutdownanimation.zip
-    	unsigned char reserved[ANIMATION_HEAD_SIZE-23];		// The head of the shutdownanimation zone is 512 bytes;
-    };
-     
-   struct shutdownanimation_end_struct {
-    	char end[20];				// "SHUTDOWNANIMATIONEND"
-    	unsigned char reserver[ANIMATION_TAIL_SIZE-20];
-   };
-   #pragma pack()
+![](/assets/splash/struct.png)
 
 其放置到 splash 分区的大概过程如下:
 
@@ -185,7 +149,7 @@ date: 2016-08-03 19:40:30
 
 以下文字为引用别人的blog：
 
-> *遇到权限问题，在logcat或者kernel的log中一定会打印avc denied提示缺少什么权限，
+> 遇到权限问题，在logcat或者kernel的log中一定会打印avc denied提示缺少什么权限，
  Command： 
   cat /proc/kmsg | grep avc 或 dmesg | grep avc 
   解决原则是：缺什么补什么，一步一步补到没有avc denied为止。  
@@ -200,7 +164,7 @@ date: 2016-08-03 19:40:30
    什么类型的文件：        tclass=blk_file  
 
    解决方法：kernel.te 
-   allow kernel block_device:blk_file write;*
+   allow kernel block_device:blk_file write;
 
 以上详情请参看:  [Android 5.x 权限问题解决方法](http://m.blog.csdn.net/article/details?id=50904061)
 
