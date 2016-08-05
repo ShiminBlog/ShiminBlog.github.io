@@ -7,7 +7,7 @@ date: 2016-08-03 19:40:30
 
 *** 
 
-应一个客户的需要，需要在 Android 5.1 上，将 Android 的开机 logo、开关机动画 bootanimation.zip shutdownanimation.zip 一起存放在 splash 分区。下面就记述下实现的难点、思路以及大体逻辑。
+应一个客户的需要，需要在 Android 5.1 上，将 Android 的开机 logo、开机动画 bootanimation.zip 和关机动画shutdownanimation.zip 一起存放在 splash 分区。下面就记述下实现的难点、思路以及大体逻辑。
 
 
 ## 难点
@@ -33,7 +33,7 @@ date: 2016-08-03 19:40:30
 
 怎么放入 splash 分区，直接影响到怎么从 splash 分区读取文件。客户指定的 splash 分区一共是 20M，经过实际测量和估算，bootloader 开机 logo 大约占 2M，如果 kernel logo 也做的话，大概也在 2M 左右。而一般来说，bootanimation.zip 和 shutdownanimation.zip 也都大概在 7M 左右。那么总的算下来， 2x2M + 7x2M = 18M。那么怎么存呢？前面说过，怎么存将影响到怎么取。无非就两种取法：
 
-+ 系统在约定的启动阶段，去约定的 splash 地址，读取约定大小的文件(毕竟存入的是二进制文件)
++ 系统在约定的启动阶段，去约定的 splash 地址，读取约定大小的文件
 + 在 splash 分区特定的位置，放置一张表，表里说明，某个文件存放的位置，以及该文件的大小
 
 对比两种取法，后面一种比前面一种灵活性更好，前面一种写法是在“取”的代码中把什么都写死了，一旦后面需要增加文件的大小，又得来修改这部分“取”的代码。而第二种方法则避免了这种缺陷。那这样吧，就将三个文件存放的起始地址、三个文件的大小，做成一张表，放在 splash 分区的最前面，每次读取文件的时候，就先检索该文件，然后根据该文件里面的值进行判定。为了更加准确，还需要加上一些头和尾，来作为校验。那么整个 splash 分区划定后如下：
@@ -46,17 +46,17 @@ date: 2016-08-03 19:40:30
 
 在 splash head 里面需要放置以下内容:
 
-+ splash head 头标志，我这里使用字符串 "SPLASH!!" 来表示；
-+ bootloader logo.png 的存放起始地址；
-+ kernel logo.png 的存放起始地址；
-+ bootanimation.zip 的存放起始地址；
-+ shutdownanimation.zip 的存放起始地址
++ splash head 头标志，这里使用字符串 "SPLASH!!" 来表示；
++ bootloader logo.png 的(存放)起始地址；
++ kernel logo.png 的(存放)起始地址；
++ bootanimation.zip 的(存放)起始地址；
++ shutdownanimation.zip 的(存放)起始地址
 
-在上面的参数中，bootloader logo.png 、kernel logo.png 和 bootanimation.zip 的起始地址都是固定的，而 shutdownanimation.zip 的起始地址，是跟随者 bootanimation.zip 的起始地址加上其文件大小得出来的----这样做的目的是，将shutdownanimation.zip 接着 bootanimation.zip 挨着放，尽可能的节约空间，无他，仅此而已。另外，在代码中，因为当时为了验证的原因，多存入了 bootanimation.zip 和 shutdownanimation.zip 的大小参数，其实这俩参数也可以不要。
+在上面的参数中，bootloader logo.png 、kernel logo.png 和 bootanimation.zip 的起始地址都是固定的，而 shutdownanimation.zip 的起始地址，是随着 bootanimation.zip 的起始地址加上其文件大小得出来的----这样做的目的是，将shutdownanimation.zip 接着 bootanimation.zip 放，尽可能的节约空间。另外，在代码中，因为当时为了验证的原因，多存入了 bootanimation.zip 和 shutdownanimation.zip 的大小参数，其实这俩参数在此处也可以不要。
 
 #### bootloader logo.png 和 kernel logo.png 区域
 
-这里没有什么特别的，直接在指定的地址上，写入 logo.png 即可。不过代码中并没有真正的去存入和读取 kernel logo.png---因为kernel logo显示被我们关闭了。
+这里没有什么特别的，直接在指定的地址上，写入 logo.png 即可。不过代码中并没有真正的去存入和读取 kernel logo.png---一般的，kernel logo.png 都不再显示了。
 
 #### bootanimation.zip 区域
 
@@ -64,10 +64,10 @@ date: 2016-08-03 19:40:30
 
 其详细放置情况如下：
 
-+ bootanimation.zip head 标志，我这里使用了 "BOOTANIMATION!!"；
++ bootanimation.zip head 标志，这里使用了 "BOOTANIMATION!!"；
 + 紧跟着 32 bytes 后放入 bootanimation.zip 文件大小的参数，以 byte 为单位，该参数占4 bytes.
 + 接着放入 bootanimation.zip 的二进制文件；
-+ 接着放入 32 bytes 的尾部，在尾部的前 16 bytes，放入 bootanimation.zip 区域的结束标志，我这里使用了 "BOOTANIMATIONEND"。
++ 接着放入 32 bytes 的尾部，在尾部的前 16 bytes，放入 bootanimation.zip 区域的结束标志，这里使用了 "BOOTANIMATIONEND"。
 
 那么，在开机动画阶段，读取 bootanimation.zip 的流程即是：
 
@@ -83,10 +83,10 @@ date: 2016-08-03 19:40:30
 
 其详细放置情况如下：
 
-+ shutdownanimation.zip head 标志，我这里使用了 "SHUTDOWNANIMATION!!"；
++ shutdownanimation.zip head 标志，这里使用了 "SHUTDOWNANIMATION!!"；
 + 紧跟着 32 bytes 后放入 shutdownanimation.zip 文件大小的参数，以 byte 为单位，该参数占4 bytes.
 + 接着放入 shutdownanimation.zip 的二进制文件；
-+ 接着放入 32 bytes 的尾部，在尾部的前 19 bytes，放入 shutdownanimation.zip 区域的结束标志，我这里使用了 "SHUTDOWNANIMATIONEND"。
++ 接着放入 32 bytes 的尾部，在尾部的前 19 bytes，放入 shutdownanimation.zip 区域的结束标志，这里使用了 "SHUTDOWNANIMATIONEND"。
 
 那么，在关机动画阶段，读取 shutdownanimation.zip 的流程即是：
 
