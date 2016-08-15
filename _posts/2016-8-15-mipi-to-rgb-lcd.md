@@ -118,7 +118,7 @@ ICN6211 是一款 MIPI 转 RGB 的芯片，下面是它的简要特性:
 	}
 
 
-当然，` pinfo->i2c_cmds_table ` 这个table,按照 qcom 的屏处理流程，它是在 ` msm8916/oem_panel.c ` 里面进行处理的，下面直接贴出处理代码片段：
+当然，` pinfo->i2c_cmds_table ` 这个table,按照 qcom 的屏处理流程，它是在 `msm8916/oem_panel.c` 里面进行处理的，下面直接贴出处理代码片段：
 
 	case ICN6211_QHD_VIDEO_PANEL:
 		panelstruct->paneldata    = &icn6211_qhd_video_panel_data;
