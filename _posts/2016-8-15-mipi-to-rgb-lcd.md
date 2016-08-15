@@ -68,7 +68,7 @@ ICN6211 是一款 MIPI 转 RGB 的芯片，下面是它的简要特性:
 
 ### bootloader 
 
-在 ` mdss_dsi_panel_initialize() ` 函数中，会下发屏的配置参数。
+在 `mdss_dsi_panel_initialize()` 函数中，会下发屏的配置参数。
 它原本是调用 MIPI 接口函数 `mipi_dsi_cmds_tx() ` 去下发的参数，在这里改成或者添加 I2C 的传输接口即可。
 
 	int mdss_dsi_panel_initialize(struct mipi_dsi_panel_config *pinfo, uint32_t
