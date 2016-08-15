@@ -43,12 +43,12 @@ ICN6211 是一款 MIPI 转 RGB 的芯片，下面是它的简要特性:
 
 + 支持 I2C 接口
 
-![](assets/icn6211/icn6211_functional.png)
+![](/assets/icn6211/icn6211_functional.png)
 
 > icn6211 Functional Block Diagram
 
 
-![](assets/icn6211/icn6211_app.png)
+![](/assets/icn6211/icn6211_app.png)
 
 > System Application Diagram
 
@@ -64,7 +64,7 @@ ICN6211 是一款 MIPI 转 RGB 的芯片，下面是它的简要特性:
 
 ### ICN6211 参数图
 
-![](assets/icn6211/icn6211_para.png)
+![](/assets/icn6211/icn6211_para.png)
 
 ### bootloader 
 
