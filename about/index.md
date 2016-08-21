@@ -35,6 +35,8 @@ comments: no
 
 邮箱：[{{ site.email }}](mailto:{{ site.email }})
 
+微博：[{{ site.weibo }}]({{ site.url }})
+
 GitHub：[http://github.com/{{ site.github }}](http://github.com/{{ site.github }})
 
 Facebook: [石云松](https://www.facebook.com/json.shi)
