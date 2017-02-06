@@ -17,8 +17,8 @@ set nocp
 filetype plugin on
 nmap <silent> <c-n> :NERDTreeToggle<CR>
 map <silent> <F9> :TlistToggle<cr>
-map <silent> <F3> <c-]> <cr>
-map <silent> <F4> <c-t> <cr>
+map <silent> <F3> <c-]>
+map <silent> <F4> <c-t>
 set backspace=indent,eol,start
 
 " for cscope 
