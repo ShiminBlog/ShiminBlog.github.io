@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  MIPI to RGB
-categories: 工作随笔
+categories: 驱动杂记
 date: 2016-08-15 9:40:30
 ---
 

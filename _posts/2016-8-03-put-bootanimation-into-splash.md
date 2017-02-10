@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Put android bootanimation and shutdownanimation into splash zone
-categories: 工作随笔
+categories: 驱动杂记
 date: 2016-08-03 19:40:30
 ---
 
