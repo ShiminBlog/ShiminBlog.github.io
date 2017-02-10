@@ -45,7 +45,7 @@ kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.
 
 这些 uevent ops 在 `start_kernel()` 就会被注册。
 
-##  userspace 
+##  Userspace 
 
 此处仅记述 android 的学习，理论上，非 android 的实现原理应该也是一样的。 android 实现则是按照 android 的体系架构，java 文件通过 jni 到 hal 层来实现的 userspace 监听。  
 
