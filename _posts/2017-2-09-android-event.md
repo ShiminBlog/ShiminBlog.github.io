@@ -180,6 +180,8 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 
 以上的实现中，采用了 `poll()` 函数 + `recv()` 函数的方式实现了对事件的监听。其中， `poll()` 和 `select()` 类似，在一定的条件下可以互相替用； `recv()` 相当于 `read()` 函数，其有阻塞和非阻塞两种用法。是否阻塞，需要使用函数 `setsockopt()` 来设置套接字的属性。  
 
+以上内容，在 android 7.0 上可以参看 hardware/ 目录下的 uevent.c 文件。
+
 ## 优化
 从网上看到了一点资料，说是在 uevent 这个部分还可以优化的。基本的思路就是，把收不到的和永远不会使用到的 uevent 去掉，不让它在 kernel 发出来。相关文章链接如下： [Udev 内核机制(kobject_uevent) 性能优化](http://blog.csdn.net/zjujoe/article/details/2986634)
 
