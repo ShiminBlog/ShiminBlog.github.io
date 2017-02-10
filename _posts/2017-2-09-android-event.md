@@ -8,13 +8,13 @@ date: 2017-02-09
 ***
 
 ## 简述
-sysfs 是 Linux userspace 和 kernel 进行交互的一个媒介。通过 sysfs，userspace 可以主动去读写 kernel 的一些数据，同样的， kernel 也可以主动将一些“变化”告知给 userspace 。也就是说，通过sysfs， userspace 和 kernel 的交互，本质上是双向的。  
+sysfs 是 Linux userspace 和 kernel 进行交互的一个媒介。通过 sysfs，userspace 可以主动去读写 kernel 的一些数据，同样的， kernel 也可以主动将一些“变化”告知给 userspace。也就是说，通过sysfs，userspace 和 kernel 的交互，本质上是双向的。  
 
 userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 show() / store() 方法：只要在 kernel 提供了对应的 show() / store() 方法，用户便可以通过 shell 用户，cd 进入到相应的目录，使用 cat / echo 操作对应的文件节点即可。而 kernel ，通过 sysfs 将一些 kernel 的“变化”“告知”给 userspace 则是通过 uevent 的方式。  
 
-一般来说，Kernel 会发送一个字符串给 userspace ，然后 userspace 来解析处理该字符串，比如android7.0上 HDMI 热插拔的 event 字符串： change@/devices/virtual/switch/hdmi 。 该字符串的路径为 "/sys/devices/virtual/switch/hdmi/change" ，届时 userspace 的监听线程去读取该文件节点即可。
+一般来说，Kernel 会发送一个字符串给 userspace，然后 userspace 来解析处理该字符串，比如android7.0上 HDMI 热插拔的 event 字符串： change@/devices/virtual/switch/hdmi 。 该字符串的路径为 "/sys/devices/virtual/switch/hdmi/change" ，届时 userspace 的监听线程去读取该文件节点即可。
 
-在 Linux-3.x 上是基于 NetLink 来实现的。其实现思路是，首先在内核中调用 `netlink_kernel_create()` 函数创建一个socket套接字；当有事件发生的时候，则通过 `kobject_uevent()` 最终调用 `netlink_broadcast_filtered()` 向 userspace 发送数据。如果同时在 userspace ，有对应的一个 socket 已经在监听，那两相一合， kernel 的“变化”， userspace 即刻知晓。  
+在 Linux-3.x 上是基于 NetLink 来实现的。其实现思路是，首先在内核中调用 `netlink_kernel_create()` 函数创建一个socket套接字；当有事件发生的时候，则通过 `kobject_uevent()` 最终调用 `netlink_broadcast_filtered()` 向 userspace 发送数据。如果同时在 userspace ，有在监听该事件，则两相一合，kernel 的“变化”，userspace 即刻知晓。  
 
 ##  kernel 
  kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.c` ，其简要调用如下：  
