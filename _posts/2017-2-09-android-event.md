@@ -8,6 +8,7 @@ date: 2017-02-09
 ***
 
 ## 简述
+
 sysfs 是 Linux userspace 和 kernel 进行交互的一个媒介。通过 sysfs，userspace 可以主动去读写 kernel 的一些数据，同样的， kernel 也可以主动将一些“变化”告知给 userspace。也就是说，通过sysfs，userspace 和 kernel 的交互，本质上是双向的。  
 
 userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 show() / store() 方法：只要在 kernel 提供了对应的 show() / store() 方法，用户便可以通过 shell 用户，cd 进入到相应的目录，使用 cat / echo 操作对应的文件节点即可。而 kernel ，通过 sysfs 将一些 kernel 的“变化”“告知”给 userspace 则是通过 uevent 的方式。  
@@ -16,8 +17,9 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 
 在 Linux-3.x 上是基于 NetLink 来实现的。其实现思路是，首先在内核中调用 `netlink_kernel_create()` 函数创建一个socket套接字；当有事件发生的时候，则通过 `kobject_uevent()` 最终调用 `netlink_broadcast_filtered()` 向 userspace 发送数据。如果同时在 userspace ，有在监听该事件，则两相一合，kernel 的“变化”，userspace 即刻知晓。  
 
-##  kernel 
- kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.c` ，其简要调用如下：  
+##  Kernel 
+
+kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.c` ，其简要调用如下：  
 `kobject_uevent(&drv->p->kobj, KOBJ_ADD);`  
 `kobject_uevent_env(kobj, action, NULL);`  
 `retval = netlink_broadcast_filtered(uevent_sock, skb,0, 1, GFP_KERNEL,kobj_bcast_filter,kobj);`  
@@ -44,8 +46,11 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 这些 uevent ops 在 `start_kernel()` 就会被注册。
 
 ##  userspace 
+
 此处仅记述 android 的学习，理论上，非 android 的实现原理应该也是一样的。 android 实现则是按照 android 的体系架构，java 文件通过 jni 到 hal 层来实现的 userspace 监听。  
+
 #### Android
+
 在高通平台的 android 7.0 版本上，Android java 提供了一个 `UEventObserver` 类。在该类中有一个事件线程 `UEventThread`，该线程中将重新实现了一个 `run()` 方法：  
 
     @Override
@@ -99,6 +104,7 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 以上函数，大约可参考文件 UEventObserver.java 和 BatteryService.java。  
 
 #### JNI
+
 在 JNI 层为 uevent 提供了4个封装：  
 
   static void nativeSetup(JNIEnv *env, jclass clazz);  
@@ -114,6 +120,7 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 以上内容，在android7.0 上可参考文件 android_os_UEventObserver.cpp
 
 #### HAL
+
 在 HAL 层，最主要的就是以下两个函数：  
   
   int uevent_init()；  
@@ -183,6 +190,7 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 以上内容，在 android 7.0 上可以参看 hardware/ 目录下的 uevent.c 文件。
 
 ## 优化
+
 从网上看到了一点资料，说是在 uevent 这个部分还可以优化的。基本的思路就是，把收不到的和永远不会使用到的 uevent 去掉，不让它在 kernel 发出来。相关文章链接如下： [Udev 内核机制(kobject_uevent) 性能优化](http://blog.csdn.net/zjujoe/article/details/2986634)
 
 ---
