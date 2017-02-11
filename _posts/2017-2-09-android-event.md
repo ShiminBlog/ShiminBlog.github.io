@@ -20,28 +20,29 @@ userspace 通过 sysfs 访问 kernel 数据的方法，便是大名鼎鼎的 sho
 ##  Kernel 
 
 kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.c` ，其简要调用如下：  
-`kobject_uevent(&drv->p->kobj, KOBJ_ADD);`  
-`kobject_uevent_env(kobj, action, NULL);`  
-`retval = netlink_broadcast_filtered(uevent_sock, skb,0, 1, GFP_KERNEL,kobj_bcast_filter,kobj);`  
+	
+	kobject_uevent(&drv->p->kobj, KOBJ_ADD);  
+	kobject_uevent_env(kobj, action, NULL);  
+	retval = netlink_broadcast_filtered(uevent_sock, skb,0, 1, GFP_KERNEL,kobj_bcast_filter,kobj);  
 
 其中，`kobject_uevent(struct kobject *kobj, enum kobject_action action)` 中的 action 对应着以下几种：  
 
-  KOBJ_ADD,  
-  KOBJ_REMOVE,  
-  KOBJ_CHANGE,  
-  KOBJ_MOVE,  
-  KOBJ_ONLINE,                                                                                                                             
-  KOBJ_OFFLINE,  
+	  KOBJ_ADD,  
+	  KOBJ_REMOVE,  
+	  KOBJ_CHANGE,  
+	  KOBJ_MOVE,  
+	  KOBJ_ONLINE,                                                                                                                             
+	  KOBJ_OFFLINE,  
 
 而  `kobject_uevent()` 其实就是直接调用了 `kobject_uevent_env()` 函数。一切的操作，将在该函数中完成，比如 kset uevent ops (struct kset_uevent_ops)的获取、字符串的填充组合、netlink message 的发送等。  
 
 其中， kset_uevent_ops 有以下几种：  
 
-  `slab_uevent_ops`  
-  `bus_uevent_ops`  
-  `device_uevent_ops`  
-  `gfs2_uevent_ops`  
-  `module_uevent_ops`  
+	  slab_uevent_ops  
+	  bus_uevent_ops  
+	  device_uevent_ops  
+	  gfs2_uevent_ops  
+	  module_uevent_ops  
 
 这些 uevent ops 在 `start_kernel()` 就会被注册。
 
@@ -96,9 +97,9 @@ kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.
 
 其发生的调用过程如下：  
 
-  startObserving()  
-  addObserver()  
-  nativeAddMatch()  
+	  startObserving()  
+	  addObserver()  
+	  nativeAddMatch()  
 
 `nativeAddMatch()` 依然是通过 JNI 来实现的，其目的是为了将 `startObserving()` 的参数增加到匹配序列中，当内核发送具有该参数的数据时，就返回匹配成功，然后调用 BatteryService 的onUEvent函数。  
 以上函数，大约可参考文件 UEventObserver.java 和 BatteryService.java。  
@@ -107,10 +108,10 @@ kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.
 
 在 JNI 层为 uevent 提供了4个封装：  
 
-  static void nativeSetup(JNIEnv *env, jclass clazz);  
-  static jstring nativeWaitForNextEvent(JNIEnv *env, jclass clazz);  
-  static void nativeAddMatch(JNIEnv* env, jclass clazz, jstring matchStr);  
-  static void nativeRemoveMatch(JNIEnv* env, jclass clazz, jstring matchStr);  
+	static void nativeSetup(JNIEnv *env, jclass clazz);  
+	static jstring nativeWaitForNextEvent(JNIEnv *env, jclass clazz);  
+	static void nativeAddMatch(JNIEnv* env, jclass clazz, jstring matchStr);  
+	static void nativeRemoveMatch(JNIEnv* env, jclass clazz, jstring matchStr);  
   
 `nativeSetup()` 调用 `uevent_init()`创建绑定套接字；  
 `nativeWaitForNextEvent()` 调用 `uevent_next_event()` 循环接收套接字数据；  
@@ -123,8 +124,8 @@ kernel ，关于 uevent 的实现代码，大约可参考文件 `kobject_uevent.
 
 在 HAL 层，最主要的就是以下两个函数：  
   
-  int uevent_init()；  
-  int uevent_next_event(char* buffer, int buffer_length)；
+	int uevent_init()；  
+	int uevent_next_event(char* buffer, int buffer_length)；
 
 它们详细实现如下：  
 
