@@ -22,7 +22,7 @@ date: 2017-02-17
 
 先简述所言，先盗图一张：  
 
-！[](/assets/input/framework-input.png)  
+![](/assets/input/framework-input.png)  
 
 其涉及到的文件及目录如下：  
 
