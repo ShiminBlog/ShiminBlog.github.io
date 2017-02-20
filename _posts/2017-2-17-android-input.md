@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Learning Summary notes of Android input
+title:  Summary Learning notes of Android input
 categories: 驱动杂记
 date: 2017-02-17
 ---
@@ -31,7 +31,7 @@ date: 2017-02-17
 
   frameworks/native/services/inputflinger/InputManager.cpp  
   frameworks/native/services/inputflinger/EventHub.cpp  
-  frameworks/native/services/inputflinger/InputReader.cpp
+  frameworks/native/services/inputflinger/InputReader.cpp  
   frameworks/native/services/inputflinger/InputDispatcher.cpp    
 
 #### InputManagerService
@@ -133,7 +133,7 @@ InputManager 的工作就如上所述了。
 
 `getEvents()` 是 `EventHub()` 为其私人定制的接口函数。而 `processEventsLocked()` 则是处理各种输入事件的，这其中包括输入设备的增加和删除，以及设备本身上报的事件。最后的 `flush()` 则是刷入到队列缓冲区，将所有的事件都交付给 `InputDispatcher` 进行分发。    
 
-###### Events Processed
+###### Events Processed  
 
 	void InputReader::processEventsLocked(const RawEvent* rawEvents, size_t count) {
 		for (const RawEvent* rawEvent = rawEvents; count;) {
@@ -206,8 +206,114 @@ InputManager 的工作就如上所述了。
 
 #### InputDispatcher
 
-`InputDispatcher` 的工作线程为 `InputDispatcherThread`，将开始分发事件。  
+`InputDispatcher` 的工作线程为 `InputDispatcherThread`，将开始分发事件。其将根据事件的类型，进行不同方向的分发。  
 
-(//TODO...)
+	bool InputDispatcherThread::threadLoop() {
+	    mDispatcher->dispatchOnce();
+	    return true;
+	}  
+
+	void InputDispatcher::dispatchOnce() {
+		 dispatchOnceInnerLocked(&nextWakeupTime);
+	}  
+	
+	void InputDispatcher::dispatchOnceInnerLocked(nsecs_t* nextWakeupTime) {
+		switch (mPendingEvent->type) {
+			case EventEntry::TYPE_CONFIGURATION_CHANGED:
+			break;
+			case EventEntry::TYPE_DEVICE_RESET:
+			break;
+			case EventEntry::TYPE_KEY:
+			 done = dispatchKeyLocked(currentTime, typedEntry, &dropReason, nextWakeupTime);
+			break;
+			case EventEntry::TYPE_MOTION:
+		        done = dispatchMotionLocked(currentTime, typedEntry,
+	            &dropReason, nextWakeupTime);
+			break;
+		}
+	}  
+
+以上函数，可重点查看 `void InputDispatcher::dispatchOnceInnerLocked(nsecs_t* nextWakeupTime)` 的 `switch` 实现。
+
+
+#### EventHub
+
+EventHub 算是一个对 Android Input framework 的一个支撑，一个基石。但它是专为 `InputReader` 服务的，它为 `InputReader` 提供了一个最重要的工具，那就是 `EventHub::getEvents()` 函数接口。通过该接口，底层上报的输入事件才会源源不断的提供给 `InputReader` 进行处理。  
+
+EventHub 通过使用 inotify 、epoll、 piple 机制，对输入设备的变化以及输入事件进行监控和处理。  
+
+	EventHub::EventHub(void) {
+		mEpollFd = epoll_create(EPOLL_SIZE_HINT);
+		mINotifyFd = inotify_init();
+		result = pipe(wakeFds);
+		//...
+	}  
+
+读取事件的接口为 `EventHub::getEvents()` ：  
+
+	size_t EventHub::getEvents(int timeoutMillis, RawEvent* buffer, size_t bufferSize) {
+		readNotifyLocked();
+		int pollResult = epoll_wait(mEpollFd, mPendingEventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+	}  
+
+当然，getEvents 实现较为复杂，其中包括了对设备的打开、读取、关闭等等操作。  
+
+## Kernel
+
+依然先盗图一张：  
+
+![](/assets/input/kernel-input.png)  
+
+在编写输入事件驱动时，一般的调用这两个函数即可：  
+
+	input_report_*();  
+	input_sync();
+
+其中的 input_report_*() 是一组函数，包括以下几个：   
+
+	input_report_key();    
+	input_report_rel();    
+	input_report_abs();  
+	input_report_ff_status();  
+	input_report_switch();  
+
+其实以上几个函数，都是调用了 `input_event()` 函数：  
+	
+	void input_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);  
+
+只是每个函数调用的时候，传入的 event-type 是不一样的。 event-type 包括以下几种：  
+
+	#define EV_SYN          0x00                                                                                                  
+	#define EV_KEY          0x01
+	#define EV_REL          0x02
+	#define EV_ABS          0x03
+	#define EV_MSC          0x04
+	#define EV_SW           0x05                                                                                                                                 
+	#define EV_LED          0x11
+	#define EV_SND          0x12                                                                                                  
+	#define EV_REP          0x14 
+	#define EV_FF           0x15                                                                                                  
+	#define EV_PWR          0x16                                                                                                  
+	#define EV_FF_STATUS        0x17  
+
+它们的含义，在 kernel/Documentation 目录下的 event-codes.txt 文件有解释：  
+
+* EV_SYN  用于事件间的分割标志。事件可能按时间或空间进行分割，就像在多点触摸协议中的例子  
+* EV_KEY  用来描述键盘，按键或者类似键盘设备的状态变化  
+* EV_REL  用来描述相对坐标轴上数值的变化，例如：鼠标向左方移动了5个单位  
+* EV_ABS  用来描述相对坐标轴上数值的变化，例如：描述触摸屏上坐标的值  
+* EV_MSC  当不能匹配现有的类型时，使用该类型进行描述  
+* EV_SW   用来描述具备两种状态的输入开关  
+* EV_LED  用于控制设备上的LED灯的开和关  
+* EV_SND  用来给设备输出提示声音  
+* EV_REP  用于可以自动重复的设备  
+* EV_FF   用来给输入设备发送强制回馈命令  
+* EV_PWR  特别用于电源开关的输入  
+* EV_FF_STATUS  用于接收设备的强制反馈状态
+
+Input 子系统在 kernel 也是分成了多层，分别包含了input核心层（input-core）、input设备（input-device）和input事件处理层（input-handler），详见 CSDN 另外一份资料：  
+
+[ Linux input子系统分析之二：深入剖析input_handler、input_core、input_device](http://blog.csdn.net/yueqian_scut/article/details/48792939)
+
 ---
 over
