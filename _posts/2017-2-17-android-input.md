@@ -315,5 +315,6 @@ Input 子系统在 kernel 也是分成了多层，分别包含了input核心层�
 
 [ Linux input子系统分析之二：深入剖析input_handler、input_core、input_device](http://blog.csdn.net/yueqian_scut/article/details/48792939)
 
+ [按键示例参考](https://github.com/shiminblog/mybakfile/blob/master/input-key/key-example.c) 
 ---
 over
